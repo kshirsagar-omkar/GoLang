@@ -458,7 +458,7 @@
               <th>Tag</th>
               <th>For What</th>
               <th>Money</th>
-              <th>Time</th>
+              <th>Date-Time</th>
               <th>Action</th>
             </tr>
           `;
@@ -519,22 +519,40 @@
 
     function editTransaction(transaction) {
       document.getElementById('record-id').value = transaction._id;
-      tagSelect.value = transaction.tag;
-      if (transaction.tag === 'Others') {
+
+      const nonOtherTags = ['Stationary', 'Food', 'Grocery'];
+
+      if (!nonOtherTags.includes(transaction.tag)) {
         otherTagInput.style.display = 'block';
-        otherTagInput.value = transaction.otherTag || '';
+        otherTagInput.value = transaction.tag;
+        tagSelect.value = 'Others';
       } else {
         otherTagInput.style.display = 'none';
+        tagSelect.value = transaction.tag;
+        otherTagInput.value = '';
       }
+
       document.getElementById('forwhat').value = transaction.forwhat;
       document.getElementById('money').value = transaction.money;
-      document.getElementById('time').value = new Date(transaction.time).toISOString().slice(0, 16);
+
+      const transactionTime = new Date(transaction.time);
+      const year = transactionTime.getFullYear();
+      const month = String(transactionTime.getMonth() + 1).padStart(2, '0');
+      const day = String(transactionTime.getDate()).padStart(2, '0');
+      const hours = String(transactionTime.getHours()).padStart(2, '0');
+      const minutes = String(transactionTime.getMinutes()).padStart(2, '0');
+      const formattedTime = `${year}-${month}-${day}T${hours}:${minutes}`;
+
+      document.getElementById('time').value = formattedTime;
       document.getElementById('cancel-update').style.display = 'inline-block';
+
       transactionsSection.classList.remove('active');
       formSection.style.display = 'block';
       addRecordBtn.style.display = 'none';
       seeTransactionsBtn.style.display = 'inline-block';
     }
+
+
 
     function deleteTransaction(id) {
       if (confirm('Are you sure you want to delete this transaction?')) {

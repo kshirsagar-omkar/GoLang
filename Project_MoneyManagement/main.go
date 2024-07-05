@@ -15,7 +15,7 @@ func main() {
 
 	r := router.Router()
 
-	fmt.Println("Server is getting Started...")
+	fmt.Println("Server is getting Started on port :4001...\n\n")
 
 	log.Fatal(http.ListenAndServe(":4001", r))
 }
